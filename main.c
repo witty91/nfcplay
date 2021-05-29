@@ -13,5 +13,18 @@ int main()
         printf("Unable to init libnfc \n");
         exit(EXIT_FAILURE);
     }
+    pnd = nfc_open(context, NULL);
+
+    if (pnd == NULL) {
+    printf("ERROR: %s\n", "Unable to open NFC device.");
+    exit(EXIT_FAILURE);
+  }
+  // Set opened NFC device to initiator mode
+  if (nfc_initiator_init(pnd) < 0) {
+    nfc_perror(pnd, "nfc_initiator_init");
+    exit(EXIT_FAILURE);
+  }
+
+  printf("NFC reader: %s opened\n", nfc_device_get_name(pnd));
     return 0;
 }
