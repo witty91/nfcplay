@@ -43,6 +43,7 @@ int main()
     .nmt = NMT_ISO14443A,
     .nbr = NBR_106,
   };
+  while (true){
   if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
     printf("The following (NFC) ISO14443A tag was found:\n");
     printf("    ATQA (SENS_RES): ");
@@ -55,6 +56,7 @@ int main()
       printf("          ATS (ATR): ");
       print_hex(nt.nti.nai.abtAts, nt.nti.nai.szAtsLen);
     }
+  }
   }
   // Close NFC device
   nfc_close(pnd);
