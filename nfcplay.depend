@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1622317293 source:/home/christopher/Tools/nfcplay/main.c
+1622664220 source:/home/christopher/Tools/nfcplay/main.c
 	<stdio.h>
 	<stdlib.h>
 	<nfc/nfc.h>
