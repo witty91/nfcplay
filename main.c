@@ -7,12 +7,18 @@ static void
 print_hex(const uint8_t *pbtData, const size_t szBytes)
 {
   size_t  szPos;
-  char *uid = malloc(4);
+  uint64_t uid = 0;
   for (szPos = 0; szPos < szBytes; szPos++) {
-    printf("%02x", pbtData[szPos]);
+   // printf("%02x", pbtData[szPos]);
+   //printf("pre shift: %x\n",uid);
+    uid = uid * 256;
+    //printf("post shift: %x\n",uid);
+    uid = uid + pbtData[szPos];
+
   }
+  printf("%x", uid);
   printf("\n");
-  printf("%s\n",uid);
+
 }
 
 
