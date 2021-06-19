@@ -3,8 +3,8 @@
 #include <nfc/nfc.h>
 #include <usb.h>
 
-static void
-print_hex(const uint8_t *pbtData, const size_t szBytes)
+static uint64_t
+get_hex(const uint8_t *pbtData, const size_t szBytes)
 {
   size_t  szPos;
   uint64_t uid = 0;
@@ -16,9 +16,17 @@ print_hex(const uint8_t *pbtData, const size_t szBytes)
     uid = uid + pbtData[szPos];
 
   }
-  printf("%x", uid);
-  printf("\n");
 
+  return uid;
+}
+
+static void
+read_matchlist(){
+    FILE *matchlist;
+    matchlist = fopen("matchlist", "r");
+    char buff[255];
+    fscanf(matchlist, "%s", buff );
+    printf("got: %s\n", buff);
 }
 
 
@@ -50,9 +58,11 @@ int main()
     .nmt = NMT_ISO14443A,
     .nbr = NBR_106,
   };
+  read_matchlist;
   while (true){
   if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
-    print_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
+    uint64_t hex = get_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
+    printf("uid is: %x\n", hex);
 //    print_hex(&nt.nti.nai.btSak, 1);
     if (nt.nti.nai.szAtsLen) {
       printf("          ATS (ATR): ");
