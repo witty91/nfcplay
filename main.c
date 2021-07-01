@@ -34,10 +34,8 @@ read_matchlist(){
             printf("%s\n", line);
             uid = strtok(line, " ");
             printf("read uid %s\n", uid);
-            uid = strtok(NULL, " ");
-            plname = strtok(line, " ");
+            plname = strtok(0, " ");
             printf("read plname %s\n", plname);
-            plname = strtok(NULL, " ");
     }
 }
 
