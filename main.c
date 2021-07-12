@@ -112,12 +112,14 @@ int main()
         matcher[i] = getidMatchPlaylist(matchlist);
         printf("received: %014lx and %s\n",matcher[i].uid,matcher[i].plname);
     }
-    uint64_t oldhex = 0;
+    uint64_t hex, oldhex = 0;
+    bool playing = false;
     while (true){
     if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
-        uint64_t hex = get_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
+        hex = get_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
         printf("uid is: %lx\n", hex);
         for (int i = 0; i < nLines; i++){
+                //printf("%014lx\n", matcher[i].uid);
             if (matcher[i].uid == hex && oldhex != hex){
                 //printf("Found a match(%014lx), playing %s\n", matcher[i].uid, matcher[i].plname);
                 system("mpc clear");
@@ -125,16 +127,18 @@ int main()
                 //printf("%s\n", command);
                 snprintf(command, sizeof(command), "mpc load %s", matcher[i].plname);
                 system(command);
-                system("mpc play");
                 oldhex = hex;
-            }else if (oldhex = hex){
-                //do nothing?
-            }else if (hex == "error   libnfc.driver.acr122_usb        Unable to write to USB (Connection timed out)"){
-                system("mpc pause");
+            }else if ((oldhex == hex) && playing == false){
+                system("mpc play");
+                playing = 1;
             }
         }
+    }else if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <= 0 && playing == true){
+        //printf("got here.\n");
+        system("mpc pause");
+        playing = 0;
     }
-    sleep(1);
+    //sleep(1);
   }
   // Close NFC device
   nfc_close(pnd);
