@@ -14,9 +14,9 @@ WINDRES = windres
 INC = 
 CFLAGS =  -Wall
 RESINC = 
-LIBDIR = 
+LIBDIR =
 LIB = 
-LDFLAGS = -lnfc 
+LDFLAGS = -lnfc -lmpdclient
 
 INC_DEBUG =  $(INC)
 CFLAGS_DEBUG =  $(CFLAGS) -g

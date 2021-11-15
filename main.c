@@ -5,6 +5,8 @@
 #include <nfc/nfc.h>
 #include <unistd.h>
 #include <usb.h>
+#include <assert.h>
+#include <mpd/client.h>
 
 struct idMatchPlaylist {
     uint64_t uid;
@@ -71,8 +73,33 @@ get_hex(const uint8_t *pbtData, const size_t szBytes)
   return uid;
 }
 
+handle_error(struct mpd_connection *c)
+{
+	assert(mpd_connection_get_error(c) != MPD_ERROR_SUCCESS);
+
+	fprintf(stderr, "%s\n", mpd_connection_get_error_message(c));
+	mpd_connection_free(c);
+	return EXIT_FAILURE;
+}
+
 int main()
 {
+	struct mpd_connection *conn;
+
+	conn = mpd_connection_new("127.0.0.1", 0, 30000);
+
+	if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
+		return handle_error(conn);
+
+	{
+		int i;
+		for(i=0;i<3;i++) {
+			printf("version[%i]: %i\n",i,
+			       mpd_connection_get_server_version(conn)[i]);
+		}
+	}
+
+
     nfc_device *pnd;
     nfc_target nt;
     nfc_context *context;
@@ -122,20 +149,18 @@ int main()
                 //printf("%014lx\n", matcher[i].uid);
             if (matcher[i].uid == hex && oldhex != hex){
                 //printf("Found a match(%014lx), playing %s\n", matcher[i].uid, matcher[i].plname);
-                system("mpc clear");
-                char *command[100];
-                //printf("%s\n", command);
-                snprintf(command, sizeof(command), "mpc load %s", matcher[i].plname);
-                system(command);
+                mpd_run_clear(conn);
+                char *plname = strtok(matcher[i].plname, "\n");
+                mpd_run_load(conn, plname);
                 oldhex = hex;
             }else if ((oldhex == hex) && playing == false){
-                system("mpc play");
+                mpd_run_play(conn);
                 playing = 1;
             }
         }
     }else if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) <= 0 && playing == true){
         //printf("got here.\n");
-        system("mpc pause");
+        mpd_run_pause(conn, true);
         playing = 0;
     }
     //sleep(1);
