@@ -85,8 +85,9 @@ handle_error(struct mpd_connection *c)
 int main()
 {
 	struct mpd_connection *conn;
+	struct mpd_song *currSong;
 
-	conn = mpd_connection_new("127.0.0.1", 0, 30000);
+	conn = mpd_connection_new("127.0.0.1", 0, 5000);
 
 	if (mpd_connection_get_error(conn) != MPD_ERROR_SUCCESS)
 		return handle_error(conn);
@@ -98,7 +99,6 @@ int main()
 			       mpd_connection_get_server_version(conn)[i]);
 		}
 	}
-
 
     nfc_device *pnd;
     nfc_target nt;
@@ -144,7 +144,9 @@ int main()
     while (true){
     if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
         hex = get_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
-        printf("uid is: %lx\n", hex);
+        //printf("uid is: %lx\n", hex);
+        currSong = mpd_run_current_song(conn);
+        //printf("%s\n",currSong);
         for (int i = 0; i < nLines; i++){
                 //printf("%014lx\n", matcher[i].uid);
             if (matcher[i].uid == hex && oldhex != hex){
