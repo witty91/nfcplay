@@ -142,10 +142,11 @@ int main()
     uint32_t hex, oldhex = 0;
     bool playing = false;
     while (true){
+    currSong = mpd_run_current_song(conn);
     if (nfc_initiator_select_passive_target(pnd, nmMifare, NULL, 0, &nt) > 0) {
         hex = get_hex(nt.nti.nai.abtUid, nt.nti.nai.szUidLen);
         //printf("uid is: %lx\n", hex);
-        currSong = mpd_run_current_song(conn);
+
         //printf("%s\n",currSong);
         for (int i = 0; i < nLines; i++){
                 //printf("%014lx\n", matcher[i].uid);
