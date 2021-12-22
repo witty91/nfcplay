@@ -6,9 +6,9 @@
 WORKDIR = `pwd`
 
 CC = gcc
-CXX = gcc
+CXX = g++
 AR = ar
-LD = gcc
+LD = g++
 WINDRES = windres
 
 INC = 
@@ -49,9 +49,6 @@ OBJ_RELEASE = $(OBJDIR_RELEASE)/main.o
 all: debug release
 
 clean: clean_debug clean_release
-
-install:
-	cp $(OUT_RELEASE) $(DESTDIR)
 
 before_debug: 
 	test -d bin/Debug || mkdir -p bin/Debug

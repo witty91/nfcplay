@@ -9,14 +9,14 @@
 #include <mpd/client.h>
 
 struct idMatchPlaylist {
-    uint32_t uid;
+    uint64_t uid;
     char *plname;
 };
 
 typedef struct idMatchPlaylist idMatchPlaylist;
 
-uint32_t hex2int(char *hex) {
-    uint32_t val = 0;
+uint64_t hex2int(char *hex) {
+    uint64_t val = 0;
     while (*hex) {
         // get current character then increment
         uint8_t byte = *hex++;
@@ -57,11 +57,11 @@ int getNumberOfLines(FILE *matchlist){
 }
 
 
-static uint32_t
+static uint64_t
 get_hex(const uint8_t *pbtData, const size_t szBytes)
 {
   size_t  szPos;
-  uint32_t uid = 0;
+  uint64_t uid = 0;
   for (szPos = 0; szPos < szBytes; szPos++) {
    // printf("%02x", pbtData[szPos]);
    //printf("pre shift: %x\n",uid);
@@ -139,7 +139,7 @@ int main()
         matcher[i] = getidMatchPlaylist(matchlist);
         printf("received: %014lx and %s\n",matcher[i].uid,matcher[i].plname);
     }
-    uint32_t hex, oldhex = 0;
+    uint64_t hex, oldhex = 0;
     bool playing = false;
     while (true){
     currSong = mpd_run_current_song(conn);
